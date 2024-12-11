@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:appwrite/models.dart';
 import 'package:flutter/foundation.dart';
-import 'package:netflix_clone/apis/client.dart';
+import 'package:logger/logger.dart';
 
+import '../apis/client.dart';
 import '../data/store.dart';
 
 class AccountProvider extends ChangeNotifier {
+  final Logger _logger = Logger();
   User? _current;
   User? get current => _current;
 
@@ -45,9 +47,10 @@ class AccountProvider extends ChangeNotifier {
         name: name,
       );
       _current = result;
-      notifyListeners();
+      login(email, password);
     } catch (e) {
-      throw Exception("Failed to register: $e");
+      _logger.e(e);
+      throw Exception("Incorrect username or password");
     }
   }
   
@@ -58,6 +61,7 @@ class AccountProvider extends ChangeNotifier {
       Store.set("session", json.encode(result.toMap()));
       notifyListeners();
     } catch (e) {
+      _logger.e(e);
       _session = null;
       throw Exception("Failed to login: $e");
     }

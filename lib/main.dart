@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:netflix_clone/providers/movie.dart';
-import 'package:netflix_clone/providers/watchlist.dart';
 import 'package:provider/provider.dart';
 
+import 'constants/app_theme.dart';
 import 'providers/account.dart';
+import 'providers/movie.dart';
+import 'providers/watchlist.dart';
 import 'screens/screens.dart';
 
 void main() {
@@ -28,25 +29,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Netflix',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0XFFE8282B),
-            primary: const Color(0XFFE8282B),
-            surface: const Color(0xFF0A0A0A),
-            onSurface: const Color(0xFF0f0f0f),
-            outline: Colors.white,
-            brightness: Brightness.dark),
-        useMaterial3: true,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        //   scaffoldBackgroundColor: Colors.black,
-        inputDecorationTheme: const InputDecorationTheme(
-          fillColor: Color(0xFF0f0f0f),
-          focusedBorder:
-              OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-          border: OutlineInputBorder(
-          ),
-        ),
-      ),
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
       onGenerateRoute: _generateRoute,
       themeMode: ThemeMode.dark,
       home: FutureBuilder(

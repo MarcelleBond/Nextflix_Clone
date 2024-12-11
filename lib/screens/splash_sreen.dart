@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:netflix_clone/constants/assets.dart';
+
+import '../constants/assets.dart';
 
 class SplashScreen extends StatelessWidget {
   static const String routeName = "splash";

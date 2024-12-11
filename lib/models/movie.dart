@@ -15,6 +15,7 @@ class Movie {
   final num trendingIndex;
   final bool isOriginal;
   final String cast;
+  final String? videoUrl;
 
   Movie({
     required this.id,
@@ -30,6 +31,7 @@ class Movie {
     required this.trendingIndex,
     required this.isOriginal,
     required this.cast,
+    this.videoUrl,
   });
 
   Movie copyWith({
@@ -46,6 +48,7 @@ class Movie {
     num? trendingIndex,
     bool? isOriginal,
     String? cast,
+    String? videoUrl,
   }) {
     return Movie(
       id: id ?? this.id,
@@ -61,6 +64,7 @@ class Movie {
       trendingIndex: trendingIndex ?? this.trendingIndex,
       isOriginal: isOriginal ?? this.isOriginal,
       cast: cast ?? this.cast,
+      videoUrl: videoUrl ?? this.videoUrl,
     );
   }
 
@@ -87,30 +91,32 @@ class Movie {
       'trendingIndex': trendingIndex,
       'isOriginal': isOriginal,
       'cast': cast,
+      'videoUrl': videoUrl,
     };
   }
 
   factory Movie.fromMap(Map<String, dynamic> map) {
     return Movie(
-      id: map['id'] as String,
+      id: map['\$id'] as String,
       name: map['name'] as String,
       description:
           map['description'] != null ? map['description'] as String : null,
       ageRestriction: map['ageRestriction'] as String,
       durationMinutes: Duration(minutes: map['durationMinutes']),
       thumbnailImageId: map['thumbnailImageId'] as String,
-      genres: map['genres'] as String,
-      tags: map['tags'] as String,
       netflixReleaseDate: map['netflixReleaseDate'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-              map['netflixReleaseDate'] as int)
+          ? DateTime.parse(
+              map['netflixReleaseDate'] as String)
           : null,
       releaseDate: map['releaseDate'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['releaseDate'] as int)
+          ? DateTime.parse(map['releaseDate'] as String)
           : null,
       trendingIndex: map['trendingIndex'] as num,
       isOriginal: map['isOriginal'] as bool,
-      cast: map['cast'] as String,
+      videoUrl: map['videoUrl'] == null ? null : map['videoUrl'] as String,
+      tags: List.from(map['tags']).join(","),
+      genres: List.from(map['genres']).join(","),
+      cast: List.from(map['cast']).join(","),
     );
   }
 
@@ -132,12 +138,13 @@ class Movie {
       trendingIndex: -1,
       isOriginal: false,
       cast: '',
+      videoUrl: '',
     );
   }
 
   @override
   String toString() {
-    return 'Movie(id: $id, name: $name, description: $description, ageRestriction: $ageRestriction, durationMinutes: $durationMinutes, thumbnailImageId: $thumbnailImageId, genres: $genres, tags: $tags, netflixReleaseDate: $netflixReleaseDate, releaseDate: $releaseDate, trendingIndex: $trendingIndex, isOriginal: $isOriginal, cast: $cast)';
+    return 'Movie(id: $id, name: $name, description: $description, ageRestriction: $ageRestriction, durationMinutes: $durationMinutes, thumbnailImageId: $thumbnailImageId, genres: $genres, tags: $tags, netflixReleaseDate: $netflixReleaseDate, releaseDate: $releaseDate, trendingIndex: $trendingIndex, isOriginal: $isOriginal, cast: $cast, videoUrl: $videoUrl)';
   }
 
   @override
@@ -156,7 +163,8 @@ class Movie {
         other.releaseDate == releaseDate &&
         other.trendingIndex == trendingIndex &&
         other.isOriginal == isOriginal &&
-        other.cast == cast;
+        other.cast == cast &&
+        other.videoUrl == videoUrl;
   }
 
   @override
@@ -173,6 +181,7 @@ class Movie {
         releaseDate.hashCode ^
         trendingIndex.hashCode ^
         isOriginal.hashCode ^
-        cast.hashCode;
+        cast.hashCode ^
+        videoUrl.hashCode;
   }
 }

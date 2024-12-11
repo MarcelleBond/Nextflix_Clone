@@ -1,12 +1,13 @@
-import 'dart:math';
-
+import 'package:appwrite/appwrite.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logger/logger.dart';
 
 import '../apis/client.dart';
 import '../constants/appwrite_config.dart';
 import '../models/movie.dart';
 
 class MovieProvider extends ChangeNotifier {
+  final Logger _logger = Logger();
   final Map<String, Uint8List> _imageCache = {};
   Movie? _selected;
   Movie _featured = Movie.empty();
@@ -14,7 +15,7 @@ class MovieProvider extends ChangeNotifier {
 
   Movie? get selected => _selected;
   Movie? get featured => _featured;
-  List<Movie> get entries => _movies;
+  List<Movie> get movies => _movies;
   List<Movie> get originals =>
       _movies.where((e) => e.isOriginal == true).toList();
   List<Movie> get animations => _movies
@@ -45,18 +46,27 @@ class MovieProvider extends ChangeNotifier {
   }
 
   Future<void> list() async {
-    var result = await ApiClient.databases.listDocuments(
-        collectionId: AppwriteConfig.moviesCollectionId,
-        databaseId: AppwriteConfig.moviesCollectionId);
+    try {
+      var result = await ApiClient.databases.listDocuments(
+          collectionId: AppwriteConfig.moviesCollectionId,
+          databaseId: AppwriteConfig.databaseId,
+          queries: [
+            Query.orderDesc('videoUrl'),
+          ]);
 
-    _movies = result.documents
-        .map((document) => Movie.fromMap(document.data))
-        .toList();
-    var rng = Random();
-    _featured =
-        _movies.isEmpty ? Movie.empty() : _movies[rng.nextInt(_movies.length)];
+      _movies = result.documents
+          .map((document) => Movie.fromMap(document.data))
+          .toList();
+      _featured = _movies.isEmpty
+          ? Movie.empty()
+          : _movies.firstWhere((x) => x.name == "Sintel",
+              orElse: () => Movie.empty());
 
-    notifyListeners();
+      await imageFor(_featured);
+      notifyListeners();
+    } on Exception catch (e) {
+      _logger.e(e);
+    }
   }
 
   Future<Uint8List> imageFor(Movie movie) async {

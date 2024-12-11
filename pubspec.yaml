@@ -14,6 +14,8 @@ dependencies:
   appwrite: ^13.0.0
   shared_preferences: ^2.3.3
   form_field_validator: ^1.1.0
+  flex_color_scheme: ^8.0.2
+  logger: ^2.5.0
 
 dev_dependencies:
   flutter_test:
